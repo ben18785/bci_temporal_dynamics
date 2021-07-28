@@ -1,12 +1,10 @@
 rm(list=ls())
 library(tidyverse)
-library(rstan)
 library(reshape2)
-rstan_options(auto_write = TRUE)
-options(mc.cores=4)
 
 df <- read.csv("data/processed/BCI_summary_data_forben_reproductivesonly_2Oct.csv")
 
+# determine first year each species appears and sort
 years <- sort(unique(df$censusyear))
 df_first <- df %>%
   filter(N_present > 0) %>%
@@ -15,6 +13,7 @@ df_first <- df %>%
   ungroup() %>%
   mutate(firstAppearance=match(first_year, years))
 
+# determine count of newly arriving species in each year subsequent to 1982
 df <- df %>%
   left_join(df_first)
 lMutantCounts <- vector(length = 7)
@@ -24,7 +23,8 @@ for(i in 1:7){
   lMutantCounts[i] <- sum(aTempDF$N_present)
 }
 
-# reorder according to first appearance
+# create matrix of counts of species in each year (with later arriving species
+# towards bottom)
 df <- df %>%
   arrange(first_year)
 counts <- df %>%
@@ -34,19 +34,21 @@ counts <- df %>%
   select(-genus_species_subspecies) %>%
   as.matrix()
 
-# activeVariantCount
+# number of variants active in each year
 df_active <- df %>%
   ungroup() %>%
   dplyr::group_by(censusyear) %>%
   dplyr::summarise(n=sum(censusyear >= first_year))
 
-
+# index representing census year when each species appeared
 firstAppearance <- df %>% select(genus_species_subspecies, firstAppearance) %>% unique()
-stan_data1 <- list(N=n_distinct(df$censusyear),
+
+# format for Stan
+stan_data <- list(N=n_distinct(df$censusyear),
                    K=n_distinct(df$genus_species_subspecies),
                    firstAppearance=firstAppearance$firstAppearance,
                    mutantCounts=lMutantCounts,
                    counts=counts,
                    activeVariantCount=df_active$n,
                    names=firstAppearance$genus_species_subspecies)
-saveRDS(stan_data1, "data/processed/reproductives_stan_data.rds")
+saveRDS(stan_data, "data/processed/reproductives_stan_data.rds")
