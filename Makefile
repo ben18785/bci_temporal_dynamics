@@ -1,10 +1,6 @@
 .PHONY: all
 
-all: data/processed/bci_cleaned.rds\
-  data/processed/reproductives_stan_data.rds\
-	data/processed/stan_fits/overall_freq_dependent.rds\
-	data/processed/stan_fits/overall_freq_independent.rds\
-	data/processed/stan_fits/overall_neutral.rds
+all: data/processed/model_comparison.rds
 
 data/processed/bci_reproductives.rds: src/R/clean_and_produce_reproductives_data.R\
 	data/raw/bci.tree1.rdata\
@@ -26,10 +22,24 @@ data/processed/reproductives_stan_data.rds: src/R/prepare_stan_data.R data/proce
 	Rscript $<
 
 data/processed/stan_fits/overall_freq_dependent.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
-	Rscript $< overall_freq_dependent
+	Rscript $< overall_freq_dependent 4000 4 2
 
 data/processed/stan_fits/overall_freq_independent.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
-	Rscript $< overall_freq_independent
+	Rscript $< overall_freq_independent 8000 4 10
 
 data/processed/stan_fits/overall_neutral.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
-	Rscript $< overall_neutral
+	Rscript $< overall_neutral 4000 4 2
+
+data/processed/stan_fits/diagnostics.rds: src/R/stanfit_diagnostic_checks.R\
+	data/processed/stan_fits/overall_freq_dependent.rds\
+	data/processed/stan_fits/overall_freq_independent.rds\
+	data/processed/stan_fits/overall_neutral.rds
+	Rscript $<
+
+data/processed/model_comparison.rds: src/R/model_comparison.R\
+	data/processed/stan_fits/diagnostics.rds\
+	data/processed/stan_fits/overall_freq_dependent.rds\
+	data/processed/stan_fits/overall_freq_independent.rds\
+	data/processed/stan_fits/overall_neutral.rds
+	Rscript $<
+
