@@ -1,4 +1,3 @@
-rm(list=ls())
 library(tidyverse)
 library(rstan)
 library(reshape2)
