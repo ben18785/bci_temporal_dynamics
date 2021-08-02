@@ -18,7 +18,7 @@ data/processed/bci_cleaned.rds: src/R/remove_lazarus.R\
 	data/processed/bci_reproductives.rds
 	Rscript $<
 
-data/processed/reproductives_stan_data.rds: src/R/prepare_stan_data.R data/processed/BCI_summary_data_forben_reproductivesonly_2Oct.csv
+data/processed/reproductives_stan_data.rds: src/R/prepare_stan_data.R
 	Rscript $<
 
 data/processed/stan_fits/overall_freq_dependent.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
