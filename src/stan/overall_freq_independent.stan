@@ -5,6 +5,7 @@ data{
   int mutantCounts[(N-1)]; // counts of mutant variants in each generation
   int counts[K,N]; // counts of variants in each generation
   int activeVariantCount[N]; // number of variants that have appeared thus far
+  int hold_out;
 }
 
 parameters{
@@ -14,6 +15,7 @@ parameters{
 
 model{
   for(i in 1:(N - 1)){
+    if(i != hold_out) {
     vector[activeVariantCount[i] + 1] f; // number of active variants + mutants
     int countsTemp[activeVariantCount[i] + 1];
     real delta_temp = delta;
@@ -38,6 +40,7 @@ model{
     f = f * (1 - delta_temp);
     f[activeVariantCount[i] + 1] = delta_temp;
     countsTemp ~ multinomial(f);
+  }
   }
 }
 
