@@ -8,7 +8,11 @@ HOLDOUT_INDEP_FITS := $(addsuffix .rds, $(addprefix data/processed/stan_fits/ove
 
 all: data/processed/model_comparison.rds\
 	data/processed/model_comparison_hold_out.rds\
-	data/processed/reproductives_stan_birth_death_data.rds
+	data/processed/reproductives_stan_birth_death_data.rds\
+	data/processed/stan_fits/birth_death.rds\
+	outputs/posterior_pred_birth_death_recruitment.pdf\
+	data/processed/prior_predictive_birth_death.rds\
+	data/processed/population_birth_death_samples.rds
 
 data/processed/bci_reproductives.rds: src/R/clean_and_produce_reproductives_data.R\
 	data/raw/bci.tree1.rdata\
@@ -72,4 +76,31 @@ data/processed/model_comparison_hold_out.rds:src/R/model_comparison_hold_out.R\
 
 data/processed/reproductives_stan_birth_death_data.rds: src/R/prepare_stan_data_birth_death.R\
 	data/processed/bci_cleaned.rds
+	Rscript $<
+
+data/processed/birth_death_image.RData: data/processed/reproductives_stan_birth_death_data.rds
+
+data/processed/prior_predictive_birth_death.rds: src/R/prior_predictive_birth_death.R
+	Rscript $<
+
+data/processed/stan_fits/birth_death.rds: src/R/fit_birth_and_death.R\
+	data/processed/reproductives_stan_birth_death_data.rds\
+	src/stan/birth_and_death.stan
+	Rscript $< 8000 4 20
+
+data/processed/stan_fits/diagnostics_birth_death.rds: src/R/stanfit_birth_death_diagnostic_checks.R\
+	data/processed/stan_fits/birth_death.rds
+	Rscript $<
+
+outputs/posterior_pred_birth_death_recruitment.pdf: src/R/posterior_predictive_check_birth_death.R\
+	data/processed/stan_fits/birth_death.rds\
+	data/processed/birth_death_image.RData\
+	data/processed/stan_fits/diagnostics_birth_death.rds
+	Rscript $<
+
+outputs/posterior_pred_birth_death_mort_size.pdf: outputs/posterior_pred_birth_death_recruitment.pdf
+outputs/posterior_pred_birth_death_mort_time.pdf: outputs/posterior_pred_birth_death_recruitment.pdf
+
+data/processed/population_birth_death_samples.rds: src/R/posterior_population_generator.R\
+	data/processed/stan_fits/birth_death.rds
 	Rscript $<

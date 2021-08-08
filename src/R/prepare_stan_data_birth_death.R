@@ -81,8 +81,7 @@ df_short <- df %>%
   droplevels() %>%
   mutate(year_gap=if_else(censusyear==1985, 3, 5)) %>%
   left_join(order_df) %>%
-  arrange(species_id) %>%
-  mutate(species_death = species_id)
+  arrange(species_id)
 
 # combine data ----
 ## checks
@@ -100,8 +99,10 @@ data_stan <- list(
   N_death_obs=nrow(df_short),
   N_parents=df_short$N_parents,
   N_survive=df_short$N_survive,
-  species_death=df_short$species,
-  year_gap=df_short$year_gap
+  species_death=as.numeric(df_short$species_id),
+  year_gap=df_short$year_gap,
+  ordering=order_df
   )
 
+save.image("data/processed/birth_death_image.RData")
 saveRDS(data_stan, "data/processed/reproductives_stan_birth_death_data.rds")
