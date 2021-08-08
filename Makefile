@@ -7,7 +7,8 @@ HOLDOUT_INDEP_FITS := $(addsuffix .rds, $(addprefix data/processed/stan_fits/ove
 # $(info VAR="$(HOLDOUT_DEP_FITS)")
 
 all: data/processed/model_comparison.rds\
-	data/processed/model_comparison_hold_out.rds
+	data/processed/model_comparison_hold_out.rds\
+	data/processed/reproductives_stan_birth_death_data.rds
 
 data/processed/bci_reproductives.rds: src/R/clean_and_produce_reproductives_data.R\
 	data/raw/bci.tree1.rdata\
@@ -69,3 +70,6 @@ data/processed/model_comparison_hold_out.rds:src/R/model_comparison_hold_out.R\
 	data/processed/stan_fits/diagnostics_holdout.rds
 	Rscript $<
 
+data/processed/reproductives_stan_birth_death_data.rds: src/R/prepare_stan_data_birth_death.R\
+	data/processed/bci_cleaned.rds
+	Rscript $<
