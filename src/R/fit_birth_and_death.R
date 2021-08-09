@@ -3,7 +3,7 @@
 library(tidyverse)
 library(rstan)
 rstan_options(auto_write = TRUE)
-options(mc.cores=4)
+options(mc.cores=8)
 
 args <- commandArgs(trailingOnly=TRUE)
 iterations <- as.numeric(args[1])

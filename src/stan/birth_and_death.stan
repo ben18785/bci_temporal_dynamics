@@ -28,7 +28,6 @@ parameters{
   vector[2] mu;
   real<lower=-1, upper=1> rho;
   vector<lower=0>[2] sigma;
-  real<lower=0> nu;
 }
 
 transformed parameters {
@@ -84,13 +83,12 @@ model{
   // priors assume beta and p_survive_annual are sorted so that each element
   // corresponds to same species
   for(i in 1:N_species)
-    theta[i] ~ multi_student_t(nu, mu, Sigma);
+    theta[i] ~ multi_normal(mu, Sigma);
 
   mu[1] ~ normal(0, 0.5);
   mu[2] ~ normal(3, 0.5);
   sigma[1] ~ normal(0.5, 0.5);
   sigma[2] ~ normal(2, 1);
-  nu ~ cauchy(0, 2.5);
 }
 
 generated quantities {

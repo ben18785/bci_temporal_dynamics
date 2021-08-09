@@ -4,10 +4,12 @@ HOLDOUTS := $(shell seq 1 7)
 HOLDOUT_NEUTRAL_FITS := $(addsuffix .rds, $(addprefix data/processed/stan_fits/overall_neutral_hold_out_, $(HOLDOUTS)))
 HOLDOUT_DEP_FITS := $(addsuffix .rds, $(addprefix data/processed/stan_fits/overall_freq_dependent_hold_out_, $(HOLDOUTS)))
 HOLDOUT_INDEP_FITS := $(addsuffix .rds, $(addprefix data/processed/stan_fits/overall_freq_independent_hold_out_, $(HOLDOUTS)))
+HOLDOUT_RW_FITS := $(addsuffix .rds, $(addprefix data/processed/stan_fits/overall_freq_rw_hold_out_, $(HOLDOUTS)))
 # $(info VAR="$(HOLDOUT_DEP_FITS)")
 
 all: data/processed/model_comparison.rds\
 	data/processed/model_comparison_hold_out.rds\
+	data/processed/stan_fits/overall_freq_rw.rds\
 	data/processed/reproductives_stan_birth_death_data.rds\
 	data/processed/stan_fits/birth_death.rds\
 	outputs/posterior_pred_birth_death_recruitment.pdf\
@@ -39,6 +41,9 @@ data/processed/stan_fits/overall_freq_dependent.rds: src/R/fit_overall.R data/pr
 data/processed/stan_fits/overall_freq_independent.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
 	Rscript $< overall_freq_independent 8000 4 10 -99
 
+data/processed/stan_fits/overall_freq_rw.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
+	Rscript $< overall_freq_rw 8000 4 10 -99
+
 data/processed/stan_fits/overall_neutral.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
 	Rscript $< overall_neutral 4000 4 2 -99
 
@@ -60,6 +65,9 @@ $(HOLDOUT_DEP_FITS): data/processed/stan_fits/overall_freq_dependent_hold_out_%.
 
 $(HOLDOUT_INDEP_FITS): data/processed/stan_fits/overall_freq_independent_hold_out_%.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
 	Rscript $< overall_freq_independent 8000 4 10 $*
+
+$(HOLDOUT_RW_FITS): data/processed/stan_fits/overall_freq_rw_hold_out_%.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
+	Rscript $< overall_freq_rw 8000 4 10 $*
 
 $(HOLDOUT_NEUTRAL_FITS): data/processed/stan_fits/overall_neutral_hold_out_%.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
 	Rscript $< overall_neutral 4000 4 2 $*
@@ -86,7 +94,7 @@ data/processed/prior_predictive_birth_death.rds: src/R/prior_predictive_birth_de
 data/processed/stan_fits/birth_death.rds: src/R/fit_birth_and_death.R\
 	data/processed/reproductives_stan_birth_death_data.rds\
 	src/stan/birth_and_death.stan
-	Rscript $< 40000 8 25
+	Rscript $< 80000 8 80
 
 data/processed/stan_fits/diagnostics_birth_death.rds: src/R/stanfit_birth_death_diagnostic_checks.R\
 	data/processed/stan_fits/birth_death.rds
