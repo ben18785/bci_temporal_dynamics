@@ -18,27 +18,31 @@ data{
 
 parameters{
   // birth model
+  vector<lower=-1, upper=1>[N_species - 1] beta;
   real<lower=0, upper=1> delta;
 
   // death model
   vector[N_species] logit_p_survive_annual;
 
   // hierarchical parameters
-  row_vector[2] mu;
-  cholesky_factor_corr[2] L_Omega;
-  vector<lower=0>[2] tau;
-  matrix[2, N_species] z;
-
-
+  vector[2] mu;
+  real<lower=-1, upper=1> rho;
+  vector<lower=0>[2] sigma;
+  real<lower=0> nu;
 }
 
 transformed parameters {
-  vector[N_species] p_survive_annual;
+  vector[N_species] p_survive_annual = inv_logit(logit_p_survive_annual);
+  cov_matrix[2] Sigma;
   matrix[N_species, 2] theta;
-  vector<lower=-1, upper=1>[N_species] beta;
-  theta = rep_matrix(mu, N_species) + (diag_pre_multiply(tau, L_Omega) * z)';
-  p_survive_annual = inv_logit(theta[, 2]);
-  beta = theta[, 1];
+  Sigma[1, 1] = sigma[1]^2;
+  Sigma[1, 2] = rho * sigma[1] * sigma[2];
+  Sigma[2, 1] = rho * sigma[1] * sigma[2];
+  Sigma[2, 2] = sigma[2]^2;
+  for(i in 1:(N_species - 1))
+    theta[i, 1] = beta[i];
+  theta[N_species, 1] = 0;
+  theta[, 2] = logit_p_survive_annual;
 }
 
 model{
@@ -60,9 +64,9 @@ model{
     for(j in 1:N_species){
       if(counts_parents[j, i] > 0){
         if(i == 1) {
-          f[count] = f[count] * (1 + beta[j])^(3.0 / 5.0); // correct as beta[j]
+          f[count] = f[count] * (1 + theta[j, 1])^(3.0 / 5.0); // correct as beta[j]
         } else {
-          f[count] = f[count] * (1 + beta[j]); // correct as beta[j]
+          f[count] = f[count] * (1 + theta[j, 1]); // correct as beta[j]
         }
         count += 1;
       }
@@ -79,10 +83,14 @@ model{
 
   // priors assume beta and p_survive_annual are sorted so that each element
   // corresponds to same species
+  for(i in 1:N_species)
+    theta[i] ~ multi_student_t(nu, mu, Sigma);
+
   mu[1] ~ normal(0, 0.5);
   mu[2] ~ normal(3, 0.5);
-  to_vector(z) ~ std_normal();
-  L_Omega ~ lkj_corr_cholesky(2);
+  sigma[1] ~ normal(0.5, 0.5);
+  sigma[2] ~ normal(2, 1);
+  nu ~ cauchy(0, 2.5);
 }
 
 generated quantities {
@@ -110,9 +118,9 @@ generated quantities {
       for(j in 1:N_species){
         if(counts_parents[j, i] > 0){
           if(i == 1) {
-          f[count] = f[count] * (1 + beta[j])^(3.0 / 5.0); // correct as beta[j]
+          f[count] = f[count] * (1 + theta[j, 1])^(3.0 / 5.0); // correct as beta[j]
         } else {
-          f[count] = f[count] * (1 + beta[j]); // correct as beta[j]
+          f[count] = f[count] * (1 + theta[j, 1]); // correct as beta[j]
         }
           indexes[count] = j;
           count += 1;
