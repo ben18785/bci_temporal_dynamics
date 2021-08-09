@@ -18,30 +18,27 @@ data{
 
 parameters{
   // birth model
-  real<lower=-1, upper=1> beta[N_species];
   real<lower=0, upper=1> delta;
 
   // death model
   vector[N_species] logit_p_survive_annual;
 
   // hierarchical parameters
-  vector[2] mu;
-  real<lower=-1, upper=1> rho;
-  vector<lower=0>[2] sigma;
+  row_vector[2] mu;
+  cholesky_factor_corr[2] L_Omega;
+  vector<lower=0>[2] tau;
+  matrix[2, N_species] z;
+
+
 }
 
 transformed parameters {
-  vector[N_species] p_survive_annual = inv_logit(logit_p_survive_annual);
-  cov_matrix[2] Sigma;
+  vector[N_species] p_survive_annual;
   matrix[N_species, 2] theta;
-  Sigma[1, 1] = sigma[1]^2;
-  Sigma[1, 2] = rho * sigma[1] * sigma[2];
-  Sigma[2, 1] = rho * sigma[1] * sigma[2];
-  Sigma[2, 2] = sigma[2]^2;
-  for(i in 1:N_species) {
-    theta[i, 1] = beta[i];
-    theta[i, 2] = logit_p_survive_annual[i];
-  }
+  vector<lower=-1, upper=1>[N_species] beta;
+  theta = rep_matrix(mu, N_species) + (diag_pre_multiply(tau, L_Omega) * z)';
+  p_survive_annual = inv_logit(theta[, 2]);
+  beta = theta[, 1];
 }
 
 model{
@@ -82,13 +79,10 @@ model{
 
   // priors assume beta and p_survive_annual are sorted so that each element
   // corresponds to same species
-  for(i in 1:N_species)
-    theta[i] ~ multi_normal(mu, Sigma);
-
   mu[1] ~ normal(0, 0.5);
   mu[2] ~ normal(3, 0.5);
-  sigma[1] ~ normal(0.5, 0.5);
-  sigma[2] ~ normal(2, 1);
+  to_vector(z) ~ std_normal();
+  L_Omega ~ lkj_corr_cholesky(2);
 }
 
 generated quantities {
