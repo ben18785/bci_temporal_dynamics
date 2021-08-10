@@ -9,7 +9,7 @@ data{
 }
 
 parameters{
-  real<lower=-1,upper=1> beta[K];
+  real<lower=-1,upper=1> beta[2, K];
   real<lower=0,upper=1> delta;
 }
 
@@ -19,6 +19,7 @@ model{
     vector[activeVariantCount[i] + 1] f; // number of active variants + mutants
     int countsTemp[activeVariantCount[i] + 1];
     real delta_temp = delta;
+    real beta_temp;
     for(j in 1:activeVariantCount[i]){
       f[j] = counts[j, i];
       countsTemp[j] = counts[j,(i + 1)];
@@ -27,11 +28,15 @@ model{
     countsTemp[activeVariantCount[i] + 1] = mutantCounts[i];
     f = f / sum(f);
     for(j in 1:(activeVariantCount[i])){
+      if(i <= 3)
+        beta_temp = beta[1, j];
+      else
+        beta_temp = beta[2, j];
       if(i > 1) {
-        f[j] = f[j] * (1 + beta[j]);
+        f[j] = f[j] * (1 + beta_temp);
       }
       else {
-        f[j] = f[j] * (1 + beta[j])^(3.0 / 5.0);
+        f[j] = f[j] * (1 + beta_temp)^(3.0 / 5.0);
         delta_temp = delta^(3.0 / 5.0);
       }
     }
@@ -51,6 +56,7 @@ generated quantities{
     real delta_temp = delta;
     vector[activeVariantCount[i] + 1] f;
     int countsTemp[activeVariantCount[i] + 1];
+    real beta_temp;
     for(j in 1:activeVariantCount[i]){
       f[j] = counts[j, i];
       countsTemp[j] = counts[j, (i + 1)];
@@ -59,11 +65,15 @@ generated quantities{
     countsTemp[activeVariantCount[i] + 1] = mutantCounts[i];
     f = f / sum(f);
     for(j in 1:(activeVariantCount[i] - 1)) {
+      if(i <= 3)
+        beta_temp = beta[1, j];
+      else
+        beta_temp = beta[2, j];
       if(i > 1) {
-        f[j] = f[j] * (1 + beta[j]);
+        f[j] = f[j] * (1 + beta_temp);
       }
       else {
-        f[j] = f[j] * (1 + beta[j])^(3.0 / 5.0);
+        f[j] = f[j] * (1 + beta_temp)^(3.0 / 5.0);
         delta_temp = delta^(3.0 / 5.0);
       }
     }

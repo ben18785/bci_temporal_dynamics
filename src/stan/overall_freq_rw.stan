@@ -81,7 +81,7 @@ generated quantities{
     f[activeVariantCount[i] + 1] = 0;
     countsTemp[activeVariantCount[i] + 1] = mutantCounts[i];
     f = f / sum(f);
-    for(j in 1:(activeVariantCount[i] - 1))
+    for(j in 1:(activeVariantCount[i] - 1)) {
       if(i > 1) {
         f[j] = f[j] * (1 + beta[i, j]);
       }
@@ -89,6 +89,7 @@ generated quantities{
         f[j] = f[j] * (1 + beta[i, j])^(3.0 / 5.0);
         delta_temp = delta^(3.0 / 5.0);
       }
+    }
     f[activeVariantCount[i] + 1] = 0;
     f = f / sum(f);
     f = f * (1 - delta_temp);
