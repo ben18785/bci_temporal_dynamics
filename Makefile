@@ -94,7 +94,7 @@ data/processed/prior_predictive_birth_death.rds: src/R/prior_predictive_birth_de
 data/processed/stan_fits/birth_death.rds: src/R/fit_birth_and_death.R\
 	data/processed/reproductives_stan_birth_death_data.rds\
 	src/stan/birth_and_death.stan
-	Rscript $< 80000 8 80
+	Rscript $< 160000 4 80
 
 data/processed/stan_fits/diagnostics_birth_death.rds: src/R/stanfit_birth_death_diagnostic_checks.R\
 	data/processed/stan_fits/birth_death.rds
