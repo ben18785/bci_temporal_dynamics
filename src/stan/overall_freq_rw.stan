@@ -9,14 +9,19 @@ data{
 }
 
 parameters{
-  matrix[N - 1, K] logit_beta;
+  matrix[N - 1, K - 1] logit_beta;
   real<lower=0,upper=1> delta;
-  vector<lower=0>[K] sigma;
-  real<lower=0> sigma_top;
+  real<lower=0> sigma;
 }
 
 transformed parameters {
-  matrix[N - 1, K] beta = -1 + inv_logit(logit_beta) * 2;
+  matrix[N - 1, K] beta;
+  for(k in 1:K) {
+    if(k < K)
+      beta[, k] = -1 + inv_logit(logit_beta[, k]) * 2;
+    else
+      beta[, k] = rep_vector(0, N-1);
+  }
 }
 
 model{
@@ -50,17 +55,16 @@ model{
   }
 
   // rw priors
-  for(j in 1:K) {
+  for(j in 1:(K - 1)) {
     for(i in 1:(N - 1)) {
       if(i == 1) {
         logit_beta[i, j] ~ normal(0, 0.5);
       } else{
-        logit_beta[i, j] ~ normal(logit_beta[i - 1, j], sigma[j]);
+        logit_beta[i, j] ~ normal(logit_beta[i - 1, j], sigma);
       }
     }
   }
-  sigma ~ normal(0, sigma_top);
-  sigma_top ~ normal(0, 0.1);
+  sigma ~ normal(0, 0.1);
 }
 
 generated quantities{

@@ -6,3 +6,4 @@
 src/stan/*.rds
 data/processed/stan_fits/*hold_out*
 data/processed/stan_fits/birth_death.rds
+data/processed/stan_fits/overall_freq_rw.rds

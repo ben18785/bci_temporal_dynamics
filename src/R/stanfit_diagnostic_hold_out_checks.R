@@ -8,12 +8,13 @@ hold_out_diagnostics <- function(modelname, holdout) {
   check_diagnostics(filename)
 }
 
-m_diagnostics <- matrix(nrow = 7 * 3 * 3,
-                        ncol = 4)
-models <- c("overall_neutral", "overall_freq_dependent",
-            "overall_freq_independent")
 params <- c("Rhat", "ESS_bulk", "ESS_tail")
 holdouts <- seq(1, 7, 1)
+models <- c("overall_neutral", "overall_freq_dependent",
+            "overall_freq_independent", "overall_freq_rw")
+m_diagnostics <- matrix(nrow = length(params) * length(holdouts) * length(models),
+                        ncol = 4)
+
 count <- 1
 for(i in seq_along(holdouts)) {
   for(j in seq_along(models)) {

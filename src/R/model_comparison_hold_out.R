@@ -23,10 +23,12 @@ f_get_all_holdouts <- function(modelname) {
 log_like_neutral <- f_get_all_holdouts("overall_neutral")
 log_like_freqdep <- f_get_all_holdouts("overall_freq_dependent")
 log_like_freqind <- f_get_all_holdouts("overall_freq_independent")
+log_like_rw <- f_get_all_holdouts("overall_freq_rw")
 
 test <- tibble(
   neutral=log_like_neutral,
   freqdep=log_like_freqdep,
-  freqind=log_like_freqind)
+  freqind=log_like_freqind,
+  rw=log_like_rw)
 
 saveRDS(test, "data/processed/model_comparison_hold_out.rds")

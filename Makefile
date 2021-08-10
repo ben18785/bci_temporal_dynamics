@@ -14,7 +14,8 @@ all: data/processed/model_comparison.rds\
 	data/processed/stan_fits/birth_death.rds\
 	outputs/posterior_pred_birth_death_recruitment.pdf\
 	data/processed/prior_predictive_birth_death.rds\
-	data/processed/population_birth_death_samples.rds
+	data/processed/population_birth_death_samples.rds\
+	outputs/time_varying_rw.pdf
 
 data/processed/bci_reproductives.rds: src/R/clean_and_produce_reproductives_data.R\
 	data/raw/bci.tree1.rdata\
@@ -50,6 +51,7 @@ data/processed/stan_fits/overall_neutral.rds: src/R/fit_overall.R data/processed
 data/processed/stan_fits/diagnostics.rds: src/R/stanfit_diagnostic_checks.R\
 	data/processed/stan_fits/overall_freq_dependent.rds\
 	data/processed/stan_fits/overall_freq_independent.rds\
+	data/processed/stan_fits/overall_freq_rw.rds\
 	data/processed/stan_fits/overall_neutral.rds
 	Rscript $<
 
@@ -60,6 +62,11 @@ data/processed/model_comparison.rds: src/R/model_comparison.R\
 	data/processed/stan_fits/overall_neutral.rds
 	Rscript $<
 
+outputs/time_varying_rw.pdf: src/R/plot_rw_parameters.R\
+	data/processed/reproductives_stan_data.rds\
+	data/processed/stan_fits/overall_freq_rw.rds
+	Rscript $<
+
 $(HOLDOUT_DEP_FITS): data/processed/stan_fits/overall_freq_dependent_hold_out_%.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
 	Rscript $< overall_freq_dependent 4000 4 2 $*
 
@@ -67,7 +74,7 @@ $(HOLDOUT_INDEP_FITS): data/processed/stan_fits/overall_freq_independent_hold_ou
 	Rscript $< overall_freq_independent 8000 4 10 $*
 
 $(HOLDOUT_RW_FITS): data/processed/stan_fits/overall_freq_rw_hold_out_%.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
-	Rscript $< overall_freq_rw 8000 4 10 $*
+	Rscript $< overall_freq_rw 16000 4 20 $*
 
 $(HOLDOUT_NEUTRAL_FITS): data/processed/stan_fits/overall_neutral_hold_out_%.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
 	Rscript $< overall_neutral 4000 4 2 $*
@@ -75,6 +82,7 @@ $(HOLDOUT_NEUTRAL_FITS): data/processed/stan_fits/overall_neutral_hold_out_%.rds
 data/processed/stan_fits/diagnostics_holdout.rds: src/R/stanfit_diagnostic_hold_out_checks.R\
 	$(HOLDOUT_DEP_FITS)\
 	$(HOLDOUT_INDEP_FITS)\
+	$(HOLDOUT_RW_FITS)\
 	$(HOLDOUT_NEUTRAL_FITS)
 	Rscript $<
 
