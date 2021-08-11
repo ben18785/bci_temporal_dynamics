@@ -133,3 +133,5 @@ outputs/posterior_pred_birth_death_mort_time.pdf: outputs/posterior_pred_birth_d
 data/processed/population_birth_death_samples.rds: src/R/posterior_population_generator.R\
 	data/processed/stan_fits/birth_death.rds
 	Rscript $<
+
+data/processed/population_birth_death_samples.csv: data/processed/population_birth_death_samples.rds

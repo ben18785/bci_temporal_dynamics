@@ -29,6 +29,8 @@ for(i in 1:nreps) {
   p[i] <- inv_logit(logit_p)
 }
 
-df <- tibble(beta=beta_l, p=p)
+df <- tibble(beta=beta_l, prob=p)
 
 saveRDS(df, "data/processed/population_birth_death_samples.rds")
+write.csv(df, "data/processed/population_birth_death_samples.csv",
+          row.names = F)
