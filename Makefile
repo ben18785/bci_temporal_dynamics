@@ -16,7 +16,8 @@ all: data/processed/model_comparison.rds\
 	outputs/posterior_pred_birth_death_recruitment.pdf\
 	data/processed/prior_predictive_birth_death.rds\
 	data/processed/population_birth_death_samples.rds\
-	outputs/time_varying_rw.pdf
+	outputs/time_varying_rw.pdf\
+	data/processed/birth_death_estimates.rds
 
 data/processed/bci_reproductives.rds: src/R/clean_and_produce_reproductives_data.R\
 	data/raw/bci.tree1.rdata\
@@ -135,3 +136,8 @@ data/processed/population_birth_death_samples.rds: src/R/posterior_population_ge
 	Rscript $<
 
 data/processed/population_birth_death_samples.csv: data/processed/population_birth_death_samples.rds
+
+data/processed/birth_death_estimates.rds: src/R/birth_death_parameters.R\
+	data/processed/stan_fits/birth_death.rds\
+	data/processed/birth_death_image.RData
+	Rscript $<
