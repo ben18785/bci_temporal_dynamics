@@ -49,6 +49,7 @@ model{
     vector[activeVariantCount[i] + 1] f; // number of active variants + mutants
     int countsTemp[activeVariantCount[i] + 1];
     int count = 1;
+    real delta_temp = delta;
     for(j in 1:N_species){
       if(counts_parents[j, i] > 0){
         f[count] = counts_parents[j, i];
@@ -64,6 +65,7 @@ model{
       if(counts_parents[j, i] > 0){
         if(i == 1) {
           f[count] = f[count] * (1 + theta[j, 1])^(3.0 / 5.0); // correct as beta[j]
+          delta_temp = delta * (3.0 / 5.0); // note this should be * not ^
         } else {
           f[count] = f[count] * (1 + theta[j, 1]); // correct as beta[j]
         }
@@ -72,8 +74,8 @@ model{
     }
     f[activeVariantCount[i] + 1] = 0;
     f = f / sum(f);
-    f = f * (1 - delta);
-    f[activeVariantCount[i] + 1] = delta;
+    f = f * (1 - delta_temp);
+    f[activeVariantCount[i] + 1] = delta_temp;
     countsTemp ~ multinomial(f);
   }
 
@@ -103,6 +105,7 @@ generated quantities {
       vector[activeVariantCount[i] + 1] f; // number of active variants + mutants
       int countsTemp[activeVariantCount[i] + 1];
       int count = 1;
+      real delta_temp = delta;
       for(j in 1:N_species){
         if(counts_parents[j, i] > 0){
           f[count] = counts_parents[j, i];
@@ -117,6 +120,7 @@ generated quantities {
         if(counts_parents[j, i] > 0){
           if(i == 1) {
           f[count] = f[count] * (1 + theta[j, 1])^(3.0 / 5.0); // correct as beta[j]
+          delta_temp = delta * (3.0 / 5.0); // note this should be * not ^
         } else {
           f[count] = f[count] * (1 + theta[j, 1]); // correct as beta[j]
         }
@@ -126,8 +130,8 @@ generated quantities {
       }
       f[activeVariantCount[i] + 1] = 0;
       f = f / sum(f);
-      f = f * (1 - delta);
-      f[activeVariantCount[i] + 1] = delta;
+      f = f * (1 - delta_temp);
+      f[activeVariantCount[i] + 1] = delta_temp;
       countsTemp = multinomial_rng(f, sum(counts_offspring[:, i]));
 
       for(j in 1:activeVariantCount[i]) {

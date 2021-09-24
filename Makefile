@@ -155,7 +155,7 @@ data/processed/bci_cleaned_quartered.rds: src/R/remove_lazarus_quartered.R\
 
 $(QUARTER_FITS): data/processed/stan_fits/quartered_%.rds: src/R/fit_quartered.R\
 	data/processed/bci_cleaned_quartered.rds
-	Rscript $< $* 100 4 2
+	Rscript $< $* 8000 4 10
 
 data/processed/quartered_betas.rds: src/R/compare_quartered_estimates.R\
 	data/processed/bci_cleaned_quartered.rds\

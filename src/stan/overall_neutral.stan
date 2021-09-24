@@ -17,6 +17,7 @@ model{
      if(i != hold_out) {
       vector[activeVariantCount[i]+1] f; // number of active variants + mutants
       int countsTemp[activeVariantCount[i]+1];
+      real delta_temp = delta;
       for(j in 1:activeVariantCount[i]){
         f[j] = counts[j,i];
         countsTemp[j] = counts[j,(i+1)];
@@ -26,8 +27,10 @@ model{
       f = f / sum(f);
       f[activeVariantCount[i]+1] = 0;
       f = f/sum(f);
-      f = f * (1-delta);
-      f[activeVariantCount[i]+1] = delta;
+      if(i == 1)
+        delta_temp = delta * (3.0 / 5.0);
+      f = f * (1 - delta_temp);
+      f[activeVariantCount[i] + 1] = delta_temp;
       countsTemp ~ multinomial(f);
     }
   }
@@ -36,8 +39,9 @@ model{
 generated quantities{
   vector[N-1] vLogLikelihood;
   for(i in 1:(N-1)){
-      vector[activeVariantCount[i]+1] f;
+      vector[activeVariantCount[i] + 1] f;
       int countsTemp[activeVariantCount[i]+1];
+      real delta_temp = delta;
       for(j in 1:activeVariantCount[i]){
         f[j] = counts[j,i];
         countsTemp[j] = counts[j,(i+1)];
@@ -47,8 +51,10 @@ generated quantities{
       f = f / sum(f);
       f[activeVariantCount[i]+1] = 0;
       f = f/sum(f);
-      f = f * (1-delta);
-      f[activeVariantCount[i]+1] = delta;
+      if(i == 1)
+        delta_temp = delta * (3.0 / 5.0);
+      f = f * (1 - delta_temp);
+      f[activeVariantCount[i] + 1] = delta_temp;
       vLogLikelihood[i] = multinomial_lpmf(countsTemp|f);
     }
 }

@@ -27,10 +27,9 @@ model{
     countsTemp[activeVariantCount[i] + 1] = mutantCounts[i];
     f = f / sum(f);
     if(i > 1) {
-      delta_temp = delta;
       f = f .* (1 + beta * f);
     } else {
-      delta_temp = delta^(3.0 / 5.0);
+      delta_temp = delta * (3.0 / 5.0); // note this should be * not ^
       for(kk in 1:(activeVariantCount[i]+1))
         f[kk] = f[kk] * (1 + beta * f[kk]) ^ (3.0 / 5.0);
     }
@@ -58,10 +57,9 @@ generated quantities{
     countsTemp[activeVariantCount[i] + 1] = mutantCounts[i];
     f = f / sum(f);
     if(i > 1) {
-      delta_temp = delta;
       f = f .* (1 + beta * f);
     } else {
-      delta_temp = delta^(3.0 / 5.0);
+      delta_temp = delta * (3.0 / 5.0);
       for(kk in 1:(activeVariantCount[i]+1))
         f[kk] = f[kk] * (1 + beta * f[kk]) ^ (3.0 / 5.0);
     }
