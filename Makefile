@@ -6,6 +6,8 @@ HOLDOUT_DEP_FITS := $(addsuffix .rds, $(addprefix data/processed/stan_fits/overa
 HOLDOUT_INDEP_FITS := $(addsuffix .rds, $(addprefix data/processed/stan_fits/overall_freq_independent_hold_out_, $(HOLDOUTS)))
 HOLDOUT_RW_FITS := $(addsuffix .rds, $(addprefix data/processed/stan_fits/overall_freq_rw_hold_out_, $(HOLDOUTS)))
 HOLDOUT_SPLIT_FITS := $(addsuffix .rds, $(addprefix data/processed/stan_fits/overall_freq_independent_split_hold_out_, $(HOLDOUTS)))
+QUARTERS := $(shell seq 1 4)
+QUARTER_FITS := $(addsuffix .rds, $(addprefix data/processed/stan_fits/quartered_, $(QUARTERS)))
 # $(info VAR="$(HOLDOUT_DEP_FITS)")
 
 all: data/processed/model_comparison.rds\
@@ -18,7 +20,7 @@ all: data/processed/model_comparison.rds\
 	data/processed/population_birth_death_samples.rds\
 	outputs/time_varying_rw.pdf\
 	data/processed/birth_death_estimates.rds\
-	data/processed/bci_reproductives_quartered.rds
+	data/processed/quartered_betas.rds
 
 data/processed/bci_reproductives.rds: src/R/clean_and_produce_reproductives_data.R\
 	data/raw/bci.tree1.rdata\
@@ -145,4 +147,20 @@ data/processed/birth_death_estimates.rds: src/R/birth_death_parameters.R\
 
 data/processed/bci_reproductives_quartered.rds: src/R/prepare_quadrant_data.R\
 	data/processed/bci_reproductives.rds
+	Rscript $<
+
+data/processed/bci_cleaned_quartered.rds: src/R/remove_lazarus_quartered.R\
+	data/processed/bci_reproductives_quartered.rds
+	Rscript $<
+
+$(QUARTER_FITS): data/processed/stan_fits/quartered_%.rds: src/R/fit_quartered.R\
+	data/processed/bci_cleaned_quartered.rds
+	Rscript $< $* 100 4 2
+
+data/processed/quartered_betas.rds: src/R/compare_quartered_estimates.R\
+	data/processed/bci_cleaned_quartered.rds\
+	data/processed/stan_fits/quartered_1.rds\
+	data/processed/stan_fits/quartered_2.rds\
+	data/processed/stan_fits/quartered_3.rds\
+	data/processed/stan_fits/quartered_4.rds
 	Rscript $<
