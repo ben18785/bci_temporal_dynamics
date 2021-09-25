@@ -13,6 +13,7 @@ QUARTER_FITS := $(addsuffix .rds, $(addprefix data/processed/stan_fits/quartered
 all: data/processed/model_comparison.rds\
 	data/processed/model_comparison_hold_out.rds\
 	data/processed/stan_fits/overall_freq_rw.rds\
+	data/processed/freq_independent_parameters.rds\
 	data/processed/reproductives_stan_birth_death_data.rds\
 	data/processed/stan_fits/birth_death.rds\
 	outputs/posterior_pred_birth_death_recruitment.pdf\
@@ -105,6 +106,11 @@ data/processed/stan_fits/diagnostics_holdout.rds: src/R/stanfit_diagnostic_hold_
 
 data/processed/model_comparison_hold_out.rds:src/R/model_comparison_hold_out.R\
 	data/processed/stan_fits/diagnostics_holdout.rds
+	Rscript $<
+
+data/processed/freq_independent_parameters.rds: src/R/freq_independent_parameters.R\
+	data/processed/reproductives_stan_data.rds\
+	data/processed/stan_fits/overall_freq_independent.rds
 	Rscript $<
 
 data/processed/reproductives_stan_birth_death_data.rds: src/R/prepare_stan_data_birth_death.R\
