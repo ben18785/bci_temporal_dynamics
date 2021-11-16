@@ -21,7 +21,8 @@ all: data/processed/model_comparison.rds\
 	data/processed/population_birth_death_samples.rds\
 	outputs/time_varying_rw.pdf\
 	data/processed/birth_death_estimates.rds\
-	data/processed/quartered_betas.rds
+	data/processed/quartered_betas.rds\
+	data/processed/birth_death_betas.csv
 
 data/processed/bci_reproductives.rds: src/R/clean_and_produce_reproductives_data.R\
 	data/raw/bci.tree1.rdata\
@@ -170,3 +171,12 @@ data/processed/quartered_betas.rds: src/R/compare_quartered_estimates.R\
 	data/processed/stan_fits/quartered_3.rds\
 	data/processed/stan_fits/quartered_4.rds
 	Rscript $<
+
+data/processed/birth_death_betas.csv: src/R/prepare_files_for_simulations.R\
+	data/processed/birth_death_estimates.rds\
+	data/processed/stan_fits/birth_death.rds
+	Rscript $<
+
+data/processed/birth_death_survive_annual.csv: data/processed/birth_death_betas.csv
+data/processed/birth_death_medians.csv: data/processed/birth_death_survive_annual.csv
+data/processed/birth_death_delta.csv: data/processed/birth_death_medians.csv
