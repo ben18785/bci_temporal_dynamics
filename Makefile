@@ -180,3 +180,4 @@ data/processed/birth_death_betas.csv: src/R/prepare_files_for_simulations.R\
 data/processed/birth_death_survive_annual.csv: data/processed/birth_death_betas.csv
 data/processed/birth_death_medians.csv: data/processed/birth_death_survive_annual.csv
 data/processed/birth_death_delta.csv: data/processed/birth_death_medians.csv
+data/processed/initial_frequencies.csv: data/processed/birth_death_delta.csv

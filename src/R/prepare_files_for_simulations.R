@@ -32,3 +32,11 @@ fit <- readRDS("data/processed/stan_fits/birth_death.rds")
 delta <- median(rstan::extract(fit, "delta")[[1]])
 write.csv(tibble(delta=delta), "data/processed/birth_death_delta.csv",
           row.names = F)
+
+# get initial frequencies of all species
+df <- readRDS("data/processed/bci_cleaned.rds")
+df_inits <- df %>%
+  select(species, censusyear, N_present) %>%
+  filter(censusyear==1982)
+write.csv(df_inits, "data/processed/initial_frequencies.csv",
+          row.names = F)
