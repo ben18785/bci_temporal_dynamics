@@ -29,8 +29,10 @@ write.csv(df_meds, "data/processed/birth_death_medians.csv")
 
 # get deltas
 fit <- readRDS("data/processed/stan_fits/birth_death.rds")
-delta <- median(rstan::extract(fit, "delta")[[1]])
-write.csv(tibble(delta=delta), "data/processed/birth_death_delta.csv",
+delta <- rstan::extract(fit, "delta")[[1]]
+write.csv(tibble(delta=delta), "data/processed/birth_death_delta_draws.csv",
+          row.names = F)
+write.csv(tibble(delta=median(delta)), "data/processed/birth_death_delta.csv",
           row.names = F)
 
 # get initial frequencies of all species
