@@ -16,3 +16,8 @@ Here, we use [GNU make](https://www.gnu.org/software/make/manual/make.html) to m
 or to run the processes in parallel (here across 3 cores):
 
 `make -j 3`
+
+To run only the Julia code type:
+
+``make julia_outputs``
+
