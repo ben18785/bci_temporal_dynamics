@@ -1,4 +1,4 @@
-.PHONY: all
+.PHONY: all julia_outputs
 
 HOLDOUTS := $(shell seq 1 7)
 HOLDOUT_NEUTRAL_FITS := $(addsuffix .rds, $(addprefix data/processed/stan_fits/overall_neutral_hold_out_, $(HOLDOUTS)))
@@ -22,7 +22,10 @@ all: data/processed/model_comparison.rds\
 	outputs/time_varying_rw.pdf\
 	data/processed/birth_death_estimates.rds\
 	data/processed/quartered_betas.rds\
-	data/processed/birth_death_betas.csv
+	data/processed/birth_death_betas.csv\
+	data/processed/N_trees.csv
+
+julia_outputs: exp_1-1_1_1_1_1.csv
 
 data/processed/bci_reproductives.rds: src/R/clean_and_produce_reproductives_data.R\
 	data/raw/bci.tree1.rdata\
@@ -181,3 +184,12 @@ data/processed/birth_death_survive_annual.csv: data/processed/birth_death_betas.
 data/processed/birth_death_medians.csv: data/processed/birth_death_survive_annual.csv
 data/processed/birth_death_delta.csv: data/processed/birth_death_medians.csv
 data/processed/initial_frequencies.csv: data/processed/birth_death_delta.csv
+
+data/processed/N_trees.csv: src/R/generate_fraction_children.R\
+	data/processed/bci_cleaned.rds
+	Rscript $<
+data/processed/data/processed/fraction_children_born_censusyear.csv: data/processed/N_trees.csv
+
+# note that, for julia runs, I don't include all dependencies or outputs here since there are so many
+exp_1-1_1_1_1_1.csv: src/julia/Birth-Death_E_master-script.jl
+	julia $<
