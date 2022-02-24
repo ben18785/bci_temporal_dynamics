@@ -30,7 +30,8 @@ julia_outputs: exp_1-1_1_1_1_1.csv
 r_post_julia: data/processed/exp_1_diversity.csv\
 	data/processed/exp_1_most_abundant.csv\
 	data/processed/exp_1_counts.csv\
-	data/processed/exp_3_diversity.csv
+	data/processed/exp_3_diversity.csv\
+	data/processed/exp_4_diversity.csv
 
 data/processed/bci_reproductives.rds: src/R/clean_and_produce_reproductives_data.R\
 	data/raw/bci.tree1.rdata\

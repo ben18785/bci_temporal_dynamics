@@ -1,3 +1,6 @@
+library(tidyverse)
+library(vegan)
+library(data.table)
 
 file_id <- list.files("data/processed/julia_runs/Exp-4_Drift-Increase/", pattern = "*.csv")
 file_id <- map_chr(file_id, ~paste0("data/processed/julia_runs/Exp-4_Drift-Increase/", .))
