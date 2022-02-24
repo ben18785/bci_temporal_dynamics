@@ -1,4 +1,4 @@
-.PHONY: all julia_outputs
+.PHONY: all julia_outputs r_post_julia
 
 HOLDOUTS := $(shell seq 1 7)
 HOLDOUT_NEUTRAL_FITS := $(addsuffix .rds, $(addprefix data/processed/stan_fits/overall_neutral_hold_out_, $(HOLDOUTS)))
@@ -26,6 +26,11 @@ all: data/processed/model_comparison.rds\
 	data/processed/N_trees.csv
 
 julia_outputs: exp_1-1_1_1_1_1.csv
+
+r_post_julia: data/processed/exp_1_diversity.csv\
+	data/processed/exp_1_most_abundant.csv\
+	data/processed/exp_1_counts.csv\
+	data/processed/exp_3_diversity.csv
 
 data/processed/bci_reproductives.rds: src/R/clean_and_produce_reproductives_data.R\
 	data/raw/bci.tree1.rdata\
@@ -193,3 +198,24 @@ data/processed/data/processed/fraction_children_born_censusyear.csv: data/proces
 # note that, for julia runs, I don't include all dependencies or outputs here since there are so many
 exp_1-1_1_1_1_1.csv: src/julia/Birth-Death_E_master-script.jl
 	julia $<
+
+# post_julia data processing
+data/processed/exp_1_diversity.csv: src/R/exp_1_diversity.R\
+	data/processed/julia_runs/Exp-1_Wildtype-Extension/exp_1-1_1_1_1_1.csv
+	Rscript $<
+
+data/processed/exp_1_most_abundant.csv: src/R/exp_1_most_abundant.R\
+	data/processed/julia_runs/Exp-1_Wildtype-Extension/exp_1-1_1_1_1_1.csv
+	Rscript $<
+
+data/processed/exp_1_counts.csv: src/R/exp_1_counts.R\
+	data/processed/julia_runs/Exp-1_Wildtype-Extension/exp_1-1_1_1_1_1.csv
+	Rscript $<
+
+# leaving out all dependencies here since there are many
+data/processed/exp_3_diversity.csv: src/R/exp_3_diversity.R
+	Rscript $<
+
+# also leaving out all dependencies for same reason
+data/processed/exp_4_diversity.csv: src/R/exp_4_diversity.R
+	Rscript $<
