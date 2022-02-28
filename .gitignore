@@ -14,3 +14,4 @@ data/processed/julia_runs/Exp-0_smooth_run/*.csv
 data/processed/julia_runs/Exp-1_Wildtype-Extension/*.csv
 data/processed/julia_runs/Exp-3_Sel_on-off_equal/*.csv
 data/processed/julia_runs/Exp-5_Drift-Reduction/*.csv
+data/processed/julia_runs/Exp-2_Migration-Revamping/*.csv

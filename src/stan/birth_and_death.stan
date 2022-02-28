@@ -65,7 +65,7 @@ model{
       if(counts_parents[j, i] > 0){
         if(i == 1) {
           f[count] = f[count] * (1 + theta[j, 1])^(3.0 / 5.0); // correct as beta[j]
-          delta_temp = delta * (3.0 / 5.0); // note this should be * not ^
+          delta_temp = delta ^ (3.0 / 5.0);
         } else {
           f[count] = f[count] * (1 + theta[j, 1]); // correct as beta[j]
         }
@@ -120,7 +120,7 @@ generated quantities {
         if(counts_parents[j, i] > 0){
           if(i == 1) {
           f[count] = f[count] * (1 + theta[j, 1])^(3.0 / 5.0); // correct as beta[j]
-          delta_temp = delta * (3.0 / 5.0); // note this should be * not ^
+          delta_temp = delta ^ (3.0 / 5.0);
         } else {
           f[count] = f[count] * (1 + theta[j, 1]); // correct as beta[j]
         }

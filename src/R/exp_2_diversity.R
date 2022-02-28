@@ -1,20 +1,43 @@
-files <- list.files(path=path, pattern = "*.csv")
-file_list <- sort(files)
+library(tidyverse)
+library(vegan)
+library(data.table)
 
-for(i in file_list){
-  a<-read.csv(paste(path, i, sep="/"))
-  a1<-a%>%
-    group_by(treatment_nr., SVt,BBt,Dt, simulation_nr,censusyear)%>%
-    summarize(D_shannon=diversity(N_present, index = "shannon"),
-              D_simpson=diversity(N_present, index = "simpson"))%>%
-    mutate(H_shannon=exp(D_shannon), H_simpson=1/(1-D_simpson))
-  a2<-a%>%
-    group_by(treatment_nr., SVt,BBt,Dt, simulation_nr,censusyear)%>%
-    filter(N_present>0)%>%
-    summarize(H_species_richness=length(unique(species)))
-  a1$D_species_richness=a2$H_species_richness
-  filename=paste("divest", gsub(".csv","",i), ".csv", sep="")
-  pathout="/Users/Armand/Desktop/BCI\ for\ distribution_new/Figure2I_J"
-  write.csv(a1, file.path(pathout, filename), row.names=FALSE)
-  print(i)
-}
+file_id <- list.files("data/processed/julia_runs/Exp-2_Migration-Revamping/", pattern = "*.csv")
+file_id <- map_chr(file_id, ~paste0("data/processed/julia_runs/Exp-2_Migration-Revamping/", .))
+a2 <- lapply(file_id, read_csv, col_names=TRUE)
+a3 <- lapply(a2, as.data.frame)
+files <- file_id
+a4 <- mapply(cbind, a3, "file_id"=files, SIMPLIFY=F)
+a5 <- rbindlist(a4)
+
+s1 <- a5 %>%
+  group_by(censusyear,simulation_nr, SVt, BBt, Dt, Mt) %>%
+  filter(N_present>0) %>%
+  summarize(D_species_richness=length(species))
+
+g <- s1 %>%
+  filter(simulation_nr == 1) %>%
+  ggplot(aes(x=censusyear, y=D_species_richness,
+             group=as.factor(Mt),
+             colour=Mt)) +
+  geom_line()+
+  scale_colour_viridis_c()
+ggsave("outputs/Mt_2I.pdf", g, width = 12, height = 6)
+
+g <- s1 %>%
+  filter(simulation_nr == 1) %>%
+  filter(Mt <= 2) %>%
+  ggplot(aes(x=censusyear, y=D_species_richness,
+             group=as.factor(Mt),
+             colour=Mt)) +
+  geom_line()+
+  scale_colour_viridis_c()
+ggsave("outputs/Mt_2I_zoom.pdf", g, width = 12, height = 6)
+
+s2 <- a5 %>%
+  group_by(censusyear,simulation_nr, SVt, BBt, Dt, M) %>%
+  summarize(D_simpson=diversity(N_present, index = "simpson")) %>%
+  mutate(H_simpson=1/(1-D_simpson))
+
+s_both <- s1 %>%
+  left_join(s2)
