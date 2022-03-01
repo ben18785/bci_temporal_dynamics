@@ -95,6 +95,7 @@ model{
 
 generated quantities {
   int counts_offspring_sim[N_species, N_generations];
+  int nmutants[N_generations];
   for(j in 1:N_species)
     for(i in 1:N_generations)
       counts_offspring_sim[j, i] = 0;
@@ -133,7 +134,7 @@ generated quantities {
       f = f * (1 - delta_temp);
       f[activeVariantCount[i] + 1] = delta_temp;
       countsTemp = multinomial_rng(f, sum(counts_offspring[:, i]));
-
+      nmutants[i] = countsTemp[activeVariantCount[i] + 1];
       for(j in 1:activeVariantCount[i]) {
         counts_offspring_sim[indexes[j], i] = countsTemp[j];
       }
