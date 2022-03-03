@@ -15,29 +15,12 @@ s1 <- a5 %>%
   filter(N_present>0) %>%
   summarize(D_species_richness=length(species))
 
-g <- s1 %>%
-  filter(simulation_nr == 1) %>%
-  ggplot(aes(x=censusyear, y=D_species_richness,
-             group=as.factor(Mt),
-             colour=Mt)) +
-  geom_line()+
-  scale_colour_viridis_c()
-ggsave("outputs/Mt_2I.pdf", g, width = 12, height = 6)
-
-g <- s1 %>%
-  filter(simulation_nr == 1) %>%
-  filter(Mt <= 2) %>%
-  ggplot(aes(x=censusyear, y=D_species_richness,
-             group=as.factor(Mt),
-             colour=Mt)) +
-  geom_line()+
-  scale_colour_viridis_c()
-ggsave("outputs/Mt_2I_zoom.pdf", g, width = 12, height = 6)
-
 s2 <- a5 %>%
-  group_by(censusyear,simulation_nr, SVt, BBt, Dt, M) %>%
+  group_by(censusyear,simulation_nr, SVt, BBt, Dt, Mt) %>%
   summarize(D_simpson=diversity(N_present, index = "simpson")) %>%
   mutate(H_simpson=1/(1-D_simpson))
 
 s_both <- s1 %>%
   left_join(s2)
+
+write.csv(s_both, "data/processed/exp_2_diversity.csv")

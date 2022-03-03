@@ -28,7 +28,7 @@
 
        T = treatment_migration
        year = 3000
-       replicates = 2
+       replicates = 5
        exp_name = "exp_2-"
        filepath = "data/processed/julia_runs/Exp-2_Migration-Revamping"
 

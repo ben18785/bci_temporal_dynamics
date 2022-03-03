@@ -1,4 +1,4 @@
-.PHONY: all julia_outputs r_post_julia
+.PHONY: all stan_fitting julia_outputs r_post_julia
 
 HOLDOUTS := $(shell seq 1 7)
 HOLDOUT_NEUTRAL_FITS := $(addsuffix .rds, $(addprefix data/processed/stan_fits/overall_neutral_hold_out_, $(HOLDOUTS)))
@@ -10,7 +10,7 @@ QUARTERS := $(shell seq 1 4)
 QUARTER_FITS := $(addsuffix .rds, $(addprefix data/processed/stan_fits/quartered_, $(QUARTERS)))
 # $(info VAR="$(HOLDOUT_DEP_FITS)")
 
-all: data/processed/model_comparison.rds\
+stan_fitting: data/processed/model_comparison.rds\
 	data/processed/model_comparison_hold_out.rds\
 	data/processed/stan_fits/overall_freq_rw.rds\
 	data/processed/freq_independent_parameters.rds\
@@ -25,13 +25,22 @@ all: data/processed/model_comparison.rds\
 	data/processed/birth_death_betas.csv\
 	data/processed/N_trees.csv
 
-julia_outputs: exp_1-1_1_1_1_1.csv
+julia_outputs: data/processed/julia_runs/Exp-1_Wildtype-Extension/exp_1-1_1_1_1_1.csv\
+	data/processed/julia_runs/Exp-3_Sel_on-off_equal/exp_3-1_1_1_1_1.csv\
+	data/processed/julia_runs/Exp-4_Drift-Increase/exp_4-1_1_1_1_1.csv\
+	data/processed/julia_runs/Exp-5_Drift-Reduction/exp_5-1_1_1_1_1.csv\
+	data/processed/julia_runs/Exp-2_Migration-Revamping/exp_2-1_1_1_1_1.csv
 
 r_post_julia: data/processed/exp_1_diversity.csv\
 	data/processed/exp_1_most_abundant.csv\
 	data/processed/exp_1_counts.csv\
+	data/processed/exp_2_diversity.csv\
 	data/processed/exp_3_diversity.csv\
 	data/processed/exp_4_diversity.csv
+
+all: stan_fitting\
+	julia_outputs\
+	r_post_julia
 
 data/processed/bci_reproductives.rds: src/R/clean_and_produce_reproductives_data.R\
 	data/raw/bci.tree1.rdata\
@@ -197,7 +206,15 @@ data/processed/N_trees.csv: src/R/generate_fraction_children.R\
 data/processed/data/processed/fraction_children_born_censusyear.csv: data/processed/N_trees.csv
 
 # note that, for julia runs, I don't include all dependencies or outputs here since there are so many
-exp_1-1_1_1_1_1.csv: src/julia/Birth-Death_E_master-script.jl
+data/processed/julia_runs/Exp-1_Wildtype-Extension/exp_1-1_1_1_1_1.csv: src/julia/Birth-Death_D_treat_exp_1_Wildtype_Ext.jl
+	julia $<
+data/processed/julia_runs/Exp-2_Migration-Revamping/exp_2-1_1_1_1_1.csv: src/julia/Birth-Death_D_treat_exp_2_Mig_Revamp.jl
+	julia $<
+data/processed/julia_runs/Exp-3_Sel_on-off_equal/exp_3-1_1_1_1_1.csv: src/julia/Birth-Death_D_treat_exp_3_Sel_on-off_equal.jl
+	julia $<
+data/processed/julia_runs/Exp-4_Drift-Increase/exp_4-1_1_1_1_1.csv: src/julia/Birth-Death_D_treat_exp_4_Drift-Increase.jl
+	julia $<
+data/processed/julia_runs/Exp-5_Drift-Reduction/exp_5-1_1_1_1_1.csv: src/julia/Birth-Death_D_treat_exp_5_Drift-Reduction.jl
 	julia $<
 
 # post_julia data processing
@@ -211,6 +228,9 @@ data/processed/exp_1_most_abundant.csv: src/R/exp_1_most_abundant.R\
 
 data/processed/exp_1_counts.csv: src/R/exp_1_counts.R\
 	data/processed/julia_runs/Exp-1_Wildtype-Extension/exp_1-1_1_1_1_1.csv
+	Rscript $<
+
+data/processed/exp_2_diversity.csv: src/R/exp_2_diversity.R
 	Rscript $<
 
 # leaving out all dependencies here since there are many
