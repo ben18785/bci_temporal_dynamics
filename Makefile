@@ -36,7 +36,8 @@ r_post_julia: data/processed/exp_1_diversity.csv\
 	data/processed/exp_1_counts.csv\
 	data/processed/exp_2_diversity.csv\
 	data/processed/exp_3_diversity.csv\
-	data/processed/exp_4_diversity.csv
+	data/processed/exp_4_diversity.csv\
+	data/processed/exp_5_diversity.csv
 
 all: stan_fitting\
 	julia_outputs\
@@ -239,4 +240,7 @@ data/processed/exp_3_diversity.csv: src/R/exp_3_diversity.R
 
 # also leaving out all dependencies for same reason
 data/processed/exp_4_diversity.csv: src/R/exp_4_diversity.R
+	Rscript $<
+
+data/processed/exp_5_diversity.csv: src/R/exp_5_diversity.R
 	Rscript $<
