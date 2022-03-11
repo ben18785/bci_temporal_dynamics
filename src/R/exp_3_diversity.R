@@ -3,7 +3,7 @@ library(tidyverse)
 library(vegan)
 library(data.table)
 
-file_id <- list.files("data/processed/julia_runs/Exp-3_Sel_on-off_equal/", pattern = "*.csv")[1:2]
+file_id <- list.files("data/processed/julia_runs/Exp-3_Sel_on-off_equal/", pattern = "*.csv")
 file_id <- map_chr(file_id, ~paste0("data/processed/julia_runs/Exp-3_Sel_on-off_equal/", .))
 a2 <- lapply(file_id, read_csv, col_names=TRUE)
 a3 <- lapply(a2, as.data.frame)
