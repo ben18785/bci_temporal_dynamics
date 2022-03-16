@@ -18,12 +18,8 @@ s7 <- s6 %>%
   group_by(species, rank) %>%
   summarize(N=length(species)) %>%
   pivot_wider(c(species), names_from = rank, values_from = N, values_fill = 0) %>%
-  filter(!str_detect(species, "migrant"))
-
-s8 <- s6 %>%
-  group_by(simulation_nr) %>%
-  summarize(sum_Freq=sum(Freq)) %>%
-  summarize(est=quantile(sum_Freq, 0.5), LCI=quantile(sum_Freq, 0.025),UCI=quantile(sum_Freq, 0.975))
+  filter(!str_detect(species, "migrant")) %>%
+  arrange(desc(`1`), desc(`2`))
 
 # replace species names by the actual most abundant ones
 s9 <- s %>%
