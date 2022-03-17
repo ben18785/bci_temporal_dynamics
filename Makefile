@@ -18,6 +18,7 @@ stan_fitting: data/processed/model_comparison.rds\
 	data/processed/stan_fits/birth_death.rds\
 	outputs/posterior_pred_birth_death_recruitment.pdf\
 	data/processed/prior_predictive_birth_death.rds\
+	outputs/prior_predictive_birth_death.pdf\
 	data/processed/population_birth_death_samples.rds\
 	outputs/time_varying_rw.pdf\
 	data/processed/birth_death_estimates.rds\
@@ -150,6 +151,10 @@ data/processed/reproductives_stan_birth_death_data.rds: src/R/prepare_stan_data_
 data/processed/birth_death_image.RData: data/processed/reproductives_stan_birth_death_data.rds
 
 data/processed/prior_predictive_birth_death.rds: src/R/prior_predictive_birth_death.R
+	Rscript $<
+
+outputs/prior_predictive_birth_death.pdf: src/R/prior_predictive_plot.R\
+	data/processed/prior_predictive_birth_death.rds
 	Rscript $<
 
 data/processed/stan_fits/birth_death.rds: src/R/fit_birth_and_death.R\
