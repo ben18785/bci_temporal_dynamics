@@ -62,19 +62,24 @@ data/processed/bci_cleaned.rds: src/R/remove_lazarus.R\
 data/processed/reproductives_stan_data.rds: src/R/prepare_stan_data.R
 	Rscript $<
 
-data/processed/stan_fits/overall_freq_dependent.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
+data/processed/stan_fits/overall_freq_dependent.rds: src/R/fit_overall.R\
+	data/processed/reproductives_stan_data.rds
 	Rscript $< overall_freq_dependent 4000 4 2 -99
 
-data/processed/stan_fits/overall_freq_independent.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
+data/processed/stan_fits/overall_freq_independent.rds: src/R/fit_overall.R\
+	data/processed/reproductives_stan_data.rds
 	Rscript $< overall_freq_independent 8000 4 10 -99
 
-data/processed/stan_fits/overall_freq_independent_split.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
+data/processed/stan_fits/overall_freq_independent_split.rds: src/R/fit_overall.R\
+	data/processed/reproductives_stan_data.rds
 	Rscript $< overall_freq_independent_split 8000 4 10 -99
 
-data/processed/stan_fits/overall_freq_rw.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
+data/processed/stan_fits/overall_freq_rw.rds: src/R/fit_overall.R\
+	data/processed/reproductives_stan_data.rds
 	Rscript $< overall_freq_rw 8000 4 10 -99
 
-data/processed/stan_fits/overall_neutral.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
+data/processed/stan_fits/overall_neutral.rds: src/R/fit_overall.R\
+	data/processed/reproductives_stan_data.rds
 	Rscript $< overall_neutral 4000 4 2 -99
 
 data/processed/stan_fits/diagnostics.rds: src/R/stanfit_diagnostic_checks.R\
@@ -97,23 +102,28 @@ outputs/time_varying_rw.pdf: src/R/plot_rw_parameters.R\
 	data/processed/stan_fits/overall_freq_rw.rds
 	Rscript $<
 
-$(HOLDOUT_DEP_FITS): data/processed/stan_fits/overall_freq_dependent_hold_out_%.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds\
+$(HOLDOUT_DEP_FITS): data/processed/stan_fits/overall_freq_dependent_hold_out_%.rds: src/R/fit_overall.R\
+	data/processed/reproductives_stan_data.rds\
 	src/stan/overall_freq_dependent.stan
 	Rscript $< overall_freq_dependent 4000 4 2 $*
 
-$(HOLDOUT_INDEP_FITS): data/processed/stan_fits/overall_freq_independent_hold_out_%.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds\
+$(HOLDOUT_INDEP_FITS): data/processed/stan_fits/overall_freq_independent_hold_out_%.rds: src/R/fit_overall.R\
+	data/processed/reproductives_stan_data.rds\
 	src/stan/overall_freq_independent.stan
 	Rscript $< overall_freq_independent 8000 4 10 $*
 
-$(HOLDOUT_SPLIT_FITS): data/processed/stan_fits/overall_freq_independent_split_hold_out_%.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds\
+$(HOLDOUT_SPLIT_FITS): data/processed/stan_fits/overall_freq_independent_split_hold_out_%.rds: src/R/fit_overall.R\
+	data/processed/reproductives_stan_data.rds\
 	src/stan/overall_freq_independent_split.stan
 	Rscript $< overall_freq_independent_split 8000 4 10 $*
 
-$(HOLDOUT_RW_FITS): data/processed/stan_fits/overall_freq_rw_hold_out_%.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds\
+$(HOLDOUT_RW_FITS): data/processed/stan_fits/overall_freq_rw_hold_out_%.rds: src/R/fit_overall.R\
+	data/processed/reproductives_stan_data.rds\
 	src/stan/overall_freq_rw.stan
 	Rscript $< overall_freq_rw 16000 4 20 $*
 
-$(HOLDOUT_NEUTRAL_FITS): data/processed/stan_fits/overall_neutral_hold_out_%.rds: src/R/fit_overall.R data/processed/reproductives_stan_data.rds
+$(HOLDOUT_NEUTRAL_FITS): data/processed/stan_fits/overall_neutral_hold_out_%.rds: src/R/fit_overall.R\
+	data/processed/reproductives_stan_data.rds
 	Rscript $< overall_neutral 4000 4 2 $*
 
 data/processed/stan_fits/diagnostics_holdout.rds: src/R/stanfit_diagnostic_hold_out_checks.R\
