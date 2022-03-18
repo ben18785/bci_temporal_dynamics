@@ -1,4 +1,4 @@
-.PHONY: all stan_fitting julia_outputs r_post_julia
+.PHONY: all stan_fitting stan_fitting_birth_death julia_outputs r_post_julia
 
 HOLDOUTS := $(shell seq 1 7)
 HOLDOUT_NEUTRAL_FITS := $(addsuffix .rds, $(addprefix data/processed/stan_fits/overall_neutral_hold_out_, $(HOLDOUTS)))
@@ -14,14 +14,15 @@ stan_fitting: data/processed/model_comparison.rds\
 	data/processed/model_comparison_hold_out.rds\
 	data/processed/stan_fits/overall_freq_rw.rds\
 	data/processed/freq_independent_parameters.rds\
-	data/processed/reproductives_stan_birth_death_data.rds\
+	outputs/time_varying_rw.pdf
+
+stan_fitting_birth_death: data/processed/reproductives_stan_birth_death_data.rds\
+	data/processed/birth_death_estimates.rds\
 	data/processed/stan_fits/birth_death.rds\
 	outputs/posterior_pred_birth_death_recruitment.pdf\
 	data/processed/prior_predictive_birth_death.rds\
 	outputs/prior_predictive_birth_death.pdf\
 	data/processed/population_birth_death_samples.rds\
-	outputs/time_varying_rw.pdf\
-	data/processed/birth_death_estimates.rds\
 	data/processed/quartered_betas.rds\
 	data/processed/birth_death_betas.csv\
 	data/processed/N_trees.csv
@@ -41,6 +42,7 @@ r_post_julia: data/processed/exp_1_diversity.csv\
 	data/processed/exp_5_diversity.csv
 
 all: stan_fitting\
+	stan_fitting_birth_death\
 	julia_outputs\
 	r_post_julia
 
