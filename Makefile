@@ -41,6 +41,9 @@ r_post_julia: data/processed/exp_1_diversity.csv\
 	data/processed/exp_4_diversity.csv\
 	data/processed/exp_5_diversity.csv
 
+figure_making: outputs/Figure 1A_distribution_selection_coefficients.pdf\
+	outputs/Figure 1B_selection_coefficients_with_frequencies.pdf
+
 all: stan_fitting\
 	stan_fitting_birth_death\
 	julia_outputs\
@@ -261,3 +264,12 @@ data/processed/exp_4_diversity.csv: src/R/exp_4_diversity.R
 
 data/processed/exp_5_diversity.csv: src/R/exp_5_diversity.R
 	Rscript $<
+
+# main plots for paper
+outputs/Figure 1A_distribution_selection_coefficients.pdf: src/R/fig_1_ab_frequency_independent.R\
+	data/processed/freq_independent_parameters.rds\
+	data/processed/bci_cleaned.rds
+	Rscript $<
+outputs/Figure 1B_selection_coefficients_with_frequencies.pdf: outputs/Figure 1A_distribution_selection_coefficients.pd
+
+
