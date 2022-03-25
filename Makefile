@@ -337,5 +337,26 @@ outputs/fig_2.pdf: src/R/fig_2_all_panels.R\
 	data/processed/fig_2j_data.rds
 	Rscript $<
 
+outputs/fig_s1.pdf: src/R/fig_s1.R\
+	data/processed/bci_cleaned.rds
+	Rscript $<
 
+outputs/fig_s2.pdf: src/R/fig_s2.R\
+	data/processed/quartered_betas.rds
+	Rscript $<
 
+data/processed/BCI_allindividuals.rds: src/R/process_all_individuals.R\
+	data/raw/bci.tree1.rdata\
+	data/raw/bci.tree2.rdata\
+	data/raw/bci.tree3.rdata\
+	data/raw/bci.tree4.rdata\
+	data/raw/bci.tree5.rdata\
+	data/raw/bci.tree6.rdata\
+	data/raw/bci.tree7.rdata\
+	data/raw/bci.tree8.rdata\
+	data/raw/BCI_all_functional_data.csv
+	Rscript $<
+
+outputs/fig_s3.pdf: src/R/fig_s3.R\
+	data/processed/BCI_allindividuals.rds
+	Rscript $<
