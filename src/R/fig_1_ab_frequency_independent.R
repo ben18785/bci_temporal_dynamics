@@ -2,12 +2,10 @@
 # species and those estimates combined with frequency dynamics
 
 library(dplyr)
-library(ggplot2)
 library(data.table)
 library(scales)
 library(tidyr)
 library(broom)
-library(ggrepel)
 
 a<-readRDS("data/processed/freq_independent_parameters.rds")
 a<-as.data.frame(a)
@@ -65,28 +63,8 @@ sig<-b1%>%
   group_by(selclass)%>%
   summarize(N=length(species))
 
-# plot
-# export size 10x10cm
-# order: negative,neutral,positive
-pal<-c("deepskyblue4", "grey75", "indianred4")
-g <- ggplot(data=b1, aes(x=species, y=s_est, ymin=s_LCI, ymax=s_UCI, colour=as.factor(selclass)))+
-  geom_errorbar(size=0.25, width=0, alpha=1)+
-  geom_point(size=0.25)+
-  scale_colour_manual("", values=pal)+
-  theme_classic()+
-  ylab("s")+
-  xlab("species")+
-  scale_y_continuous(limits=c(-1.3,0.3), breaks=c(seq(from=-1.25, to=0.5, 0.25)))+
-  geom_hline(yintercept=median(b1$s_est), colour="grey25") +
-  theme(axis.text.x = element_blank(),axis.ticks.x= element_blank(), legend.position="right")+
-  theme(aspect.ratio = 1,
-        legend.position=c(0.1, 0.1),
-        legend.text = element_text(size=14))
-ggsave(filename = "outputs/Figure 1A_distribution_selection_coefficients.pdf",
-       g,
-       device = "pdf",scale = 1,width = 20,height = 20,units =  "cm",
-       dpi = 300, useDingbats=FALSE)
-
+# export data for fig 1a
+saveRDS(b1, "data/processed/fig_1a_data.rds")
 
 # make Figure 2A: selection coefficients mapped onto frequency dynamics of species
 f<-readRDS("data/processed/bci_cleaned.rds")
@@ -132,33 +110,5 @@ labels<-labels%>%
   arrange(desc(relfreq))
 
 # relative frequency plot
-g <- ggplot(data=f4, aes(x=as.numeric(censusyear), y=relfreq,
-                    colour=as.factor(selclass), group=as.factor(species)))+
-  geom_line(size=0.25)+
-  geom_point(size=0.25)+
-  scale_colour_manual(values=pal)+
-  ylab("relative frequency (log10 scale)")+
-  xlab("year")+
-  guides(fill="none", colour="none")+
-  scale_x_continuous(breaks=c(seq(from=1980, to=2015, 5)))+
-  scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
-                labels = trans_format("log10", math_format(10^.x)))+
-  theme_classic(base_size = 12, base_family = "")+
-  theme(axis.line.x = element_line(colour = 'black', size=0.5, linetype='solid'),
-        axis.line.y = element_line(colour = 'black', size=0.5, linetype='solid'),
-        axis.ticks.x = element_line(colour = 'black', size=0.5), legend.position="right",
-        aspect.ratio = 1,
-        plot.margin = unit(c(0.1, 4, 0.1, 0.1), "cm"))+
-  coord_cartesian(clip = "off") +
-  geom_text_repel(data=labels,
-                  aes(x=as.numeric(censusyear), y=relfreq, label=species),
-                  size=2,
-                  na.rm = TRUE,
-                  force_pull=0, direction = "y",
-                  hjust = "left",
-                  nudge_x=4,
-                  xlim = c(NA, 2030))
-ggsave(filename = "outputs/Figure 1B_selection_coefficients_with_frequencies.pdf",
-       g,
-       device = "pdf",scale = 1,width = 20,height = 20,units =  "cm",dpi = 300, useDingbats=FALSE)
+saveRDS(list(f4=f4, labels=labels), "data/processed/fig_1b_data.rds")
 

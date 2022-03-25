@@ -41,8 +41,8 @@ r_post_julia: data/processed/exp_1_diversity.csv\
 	data/processed/exp_4_diversity.csv\
 	data/processed/exp_5_diversity.csv
 
-figure_making: outputs/Figure 1A_distribution_selection_coefficients.pdf\
-	outputs/Figure 1B_selection_coefficients_with_frequencies.pdf
+figure_making: outputs/fig_1.pdf\
+	outputs/fig_2.pdf
 
 all: stan_fitting\
 	stan_fitting_birth_death\
@@ -266,10 +266,76 @@ data/processed/exp_5_diversity.csv: src/R/exp_5_diversity.R
 	Rscript $<
 
 # main plots for paper
-outputs/Figure 1A_distribution_selection_coefficients.pdf: src/R/fig_1_ab_frequency_independent.R\
+data/processed/fig_1a_data.rds: src/R/fig_1_ab_frequency_independent.R\
 	data/processed/freq_independent_parameters.rds\
 	data/processed/bci_cleaned.rds
 	Rscript $<
-outputs/Figure 1B_selection_coefficients_with_frequencies.pdf: outputs/Figure 1A_distribution_selection_coefficients.pd
+data/processed/fig_1b_data.rds: data/processed/fig_1a_data.rds
+
+data/processed/fig_1c_data.rds: src/R/fig_1c_fitness_components.R\
+	data/processed/birth_death_estimates.rds\
+	data/processed/stan_fits/overall_freq_independent.rds\
+	data/processed/reproductives_stan_birth_death_data.rds
+	Rscript $<
+
+outputs/fig_1.pdf: src/R/fig_1_all_panels.R\
+	data/processed/fig_1a_data.rds\
+	data/processed/fig_1b_data.rds\
+	data/processed/fig_1c_data.rds
+	Rscript $<
+
+data/processed/fig_2a_data.rds: src/R/fig_2a.R\
+	data/processed/bci_cleaned.rds\
+	data/processed/exp_1_diversity.csv
+	Rscript $<
+data/processed/fig_2b_data.rds: src/R/fig_2b.R\
+	data/processed/bci_cleaned.rds
+	Rscript $<
+data/processed/fig_2c_data.rds: src/R/fig_2c.R\
+	data/processed/exp_3_diversity.csv\
+	data/processed/bci_cleaned.rds
+	Rscript $<
+data/processed/fig_2d_data.rds: src/R/fig_2d.R\
+	data/processed/exp_3_diversity.csv\
+	data/processed/bci_cleaned.rds
+	Rscript $<
+data/processed/fig_2e_data.rds: src/R/fig_2e.R\
+	data/processed/exp_5_diversity.csv
+	data/processed/bci_cleaned.rds
+	Rscript $<
+data/processed/fig_2f_data.rds: src/R/fig_2e.R\
+	data/processed/exp_5_diversity.csv
+	data/processed/bci_cleaned.rds
+	Rscript $<
+data/processed/fig_2g_data.rds: src/R/fig_2g.R\
+	data/processed/bci_cleaned.rds\
+	data/processed/exp_2_diversity.csv
+	Rscript $<
+data/processed/fig_2h_data.rds: src/R/fig_2h.R\
+	data/processed/bci_cleaned.rds\
+	data/processed/exp_2_diversity.csv
+	Rscript $<
+data/processed/fig_2i_data.rds: src/R/fig_2i.R\
+	data/processed/bci_cleaned.rds\
+	data/processed/exp_2_diversity.csv
+	Rscript $<
+data/processed/fig_2j_data.rds: src/R/fig_2j.R\
+	data/processed/bci_cleaned.rds\
+	data/processed/exp_2_diversity.csv
+	Rscript $<
+
+outputs/fig_2.pdf: src/R/fig_2_all_panels.R\
+	data/processed/fig_2a_data.rds\
+	data/processed/fig_2b_data.rds\
+	data/processed/fig_2c_data.rds\
+	data/processed/fig_2d_data.rds\
+	data/processed/fig_2e_data.rds\
+	data/processed/fig_2f_data.rds\
+	data/processed/fig_2g_data.rds\
+	data/processed/fig_2h_data.rds\
+	data/processed/fig_2i_data.rds\
+	data/processed/fig_2j_data.rds
+	Rscript $<
+
 
 
