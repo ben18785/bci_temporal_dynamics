@@ -38,7 +38,6 @@ ga <- ggplot(data=d, aes(x=censusyear, y=estimate))+
 
 # fig s3b
 # get Simpson's diversity and the effective number of species (Hill numbers 2)
-
 d<-a%>%
   mutate(censusyear=as.numeric(censusyear)) %>%
   group_by(censusyear)%>%

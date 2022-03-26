@@ -42,7 +42,13 @@ r_post_julia: data/processed/exp_1_diversity.csv\
 	data/processed/exp_5_diversity.csv
 
 figure_making: outputs/fig_1.pdf\
-	outputs/fig_2.pdf
+	outputs/fig_2.pdf\
+	outputs/fig_s1.pdf\
+	outputs/fig_s2.pdf\
+	outputs/fig_s3.pdf\
+	outputs/fig_s4.pdf\
+	outputs/fig_s5.pdf\
+	outputs/fig_s6.pdf
 
 all: stan_fitting\
 	stan_fitting_birth_death\
@@ -359,4 +365,18 @@ data/processed/BCI_allindividuals.rds: src/R/process_all_individuals.R\
 
 outputs/fig_s3.pdf: src/R/fig_s3.R\
 	data/processed/BCI_allindividuals.rds
+	Rscript $<
+
+outputs/fig_s4.pdf: src/R/fig_s4.R\
+	data/processed/bci_cleaned.rds\
+	data/processed/exp_1_counts.csv
+	Rscript $<
+
+outputs/fig_s5.pdf: src/R/fig_s5.R\
+	data/processed/bci_cleaned.rds\
+	data/processed/exp_1_counts.csv
+	Rscript $<
+
+outputs/fig_s6.pdf: src/R/fig_s6.R\
+	data/processed/exp_1_most_abundant.csv
 	Rscript $<
