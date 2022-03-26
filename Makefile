@@ -53,7 +53,8 @@ figure_making: outputs/fig_1.pdf\
 all: stan_fitting\
 	stan_fitting_birth_death\
 	julia_outputs\
-	r_post_julia
+	r_post_julia\
+	figure_making
 
 data/processed/bci_reproductives.rds: src/R/clean_and_produce_reproductives_data.R\
 	data/raw/bci.tree1.rdata\
