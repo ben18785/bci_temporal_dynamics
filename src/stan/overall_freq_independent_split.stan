@@ -37,7 +37,7 @@ model{
       }
       else {
         f[j] = f[j] * (1 + beta_temp)^(3.0 / 5.0);
-        delta_temp = delta ^ (3.0 / 5.0); // note this should be * not ^
+        delta_temp = delta * (3.0 / 5.0); // note this should be * not ^
       }
     }
     f[activeVariantCount[i] + 1] = 0;
@@ -74,7 +74,7 @@ generated quantities{
       }
       else {
         f[j] = f[j] * (1 + beta_temp)^(3.0 / 5.0);
-        delta_temp = delta ^ (3.0 / 5.0);
+        delta_temp = delta * (3.0 / 5.0);
       }
     }
     f[activeVariantCount[i] + 1] = 0;

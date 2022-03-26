@@ -28,7 +28,7 @@ model{
       f[activeVariantCount[i]+1] = 0;
       f = f/sum(f);
       if(i == 1)
-        delta_temp = delta ^ (3.0 / 5.0);
+        delta_temp = delta * (3.0 / 5.0);
       f = f * (1 - delta_temp);
       f[activeVariantCount[i] + 1] = delta_temp;
       countsTemp ~ multinomial(f);
@@ -52,7 +52,7 @@ generated quantities{
       f[activeVariantCount[i]+1] = 0;
       f = f/sum(f);
       if(i == 1)
-        delta_temp = delta ^ (3.0 / 5.0);
+        delta_temp = delta * (3.0 / 5.0);
       f = f * (1 - delta_temp);
       f[activeVariantCount[i] + 1] = delta_temp;
       vLogLikelihood[i] = multinomial_lpmf(countsTemp|f);

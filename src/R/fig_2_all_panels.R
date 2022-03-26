@@ -43,7 +43,7 @@ gc <- ggplot(a8, aes(x=treatment_label, y=estimate, ymin=LCI, ymax=UCI))+
   geom_errorbar(width=0.1, colour="grey50")+
   ylab("species richness")+
   xlab("treatment")+
-  ylim(220, 260)+
+  ylim(220, 265)+
   theme_classic()+
   ggtitle("C.")
 
@@ -75,7 +75,7 @@ ge <- ggplot(a8, aes(x=log10(censussize), y=estimate, ymin=LCI, ymax=UCI))+
   geom_errorbar(width=0.1, colour="grey50")+
   ylab("species richness")+
   xlab("log10(census population size, N)")+
-  ylim(220,260)+
+  ylim(220,265)+
   theme_classic()+
   theme(axis.text.x = element_text(size=10)) +
   ggtitle("E.")
@@ -127,7 +127,6 @@ gh <- ggplot(data=s2, aes(x=projectedyear, y=estimate, ymin=LCI, ymax=UCI,
   ylab("2D species evenness")+
   guides(colour="none", fill="none")+
   theme_classic()+
-  ylim(0,13) +
   ggtitle("H.")
 
 # fig 2i
@@ -137,7 +136,8 @@ a5 <- temp$a5
 start <- temp$start
 end <- temp$end
 
-labels <- map_chr(seq(1, 8, 1), ~paste0(., "X"))
+
+labels <- map_chr(2^seq(0, 5, 1), ~paste0(., "X"))
 gi <- ggplot()+
   geom_line(data=a5, aes(x=projectedyear, y=estimate,
                          group=as.factor(Mt), colour=as.factor(Mt)), size=1)+
@@ -146,7 +146,6 @@ gi <- ggplot()+
   geom_hline(yintercept=start, colour="darkgreen")+
   geom_hline(yintercept=end, colour="darkgreen", linetype="dotted")+
   geom_hline(yintercept=1, colour="black", linetype="dashed")+
-  ylim(0,500)+
   xlim(0, 1000)+
   xlab("year")+
   ylab("species richness")+
@@ -167,7 +166,6 @@ gj <- ggplot()+
   geom_hline(yintercept=start, colour="darkgreen")+
   geom_hline(yintercept=end, colour="darkgreen", linetype="dotted")+
   geom_hline(yintercept=1, colour="black", linetype="dashed")+
-  ylim(0,15)+
   xlim(0, 1000)+
   xlab("year")+
   ylab("species evenness")+

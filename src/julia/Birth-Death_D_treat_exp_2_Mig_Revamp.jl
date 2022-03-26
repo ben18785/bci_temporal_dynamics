@@ -20,11 +20,11 @@
     include("Birth-Death_C_treatments.jl") # call the experimental parameters
     #
 ## Parameters of the experiment
-       treatment_migration = DataFrame(treat_code_Svt_BBt_Dt_Mt = ["1_1_1_1","1_1_1_2","1_1_1_3","1_1_1_4","1_1_1_5","1_1_1_6","1_1_1_7","1_1_1_8"], # Sv, BB, Dt
-                       SVt = [1,1,1,1,1,1,1,1],
-                       BBt = [1,1,1,1,1,1,1,1],
-                       Dt  = [1,1,1,1,1,1,1,1],
-                       Mt  = [1,2,3,4,5,6,7,8])
+       treatment_migration = DataFrame(treat_code_Svt_BBt_Dt_Mt = ["1_1_1_1","1_1_1_2","1_1_1_3","1_1_1_4","1_1_1_5","1_1_1_6"], # Sv, BB, Dt
+                       SVt = [1,1,1,1,1,1],
+                       BBt = [1,1,1,1,1,1],
+                       Dt  = [1,1,1,1,1,1],
+                       Mt  = [1,2,4,8,16,32])
 
        T = treatment_migration
        year = 3000

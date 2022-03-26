@@ -205,7 +205,7 @@ function Birth_Death_1_Simulation(year,Dt,BBt,SVt,Mt)
        else # migration on (cases II and III):
            # generate, allocate, name and transform migrant counts back to frequency. Then update parameters
           # 1. Generate overall migrants
-            mi = rand(Poisson((Mt*delta_new)*(Ne))) # overall Migrant Individuals (~2). migrants increase in proportion to N, not just M.
+            mi = rand(Poisson(delta_new * Ne * avg_offspring_thisG)) # overall Migrant Individuals (~2). migrants increase in proportion to N, not just M.
           # 2. Define number of incoming migrant species
             ms = round(Int,mi/1.333333) # from mail 23/03/21 with AL, every Migrant Sp has on avg 1.33 individuals
           # 3. Allocate overall migrants to migrant species

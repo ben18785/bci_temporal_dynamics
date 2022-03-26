@@ -309,7 +309,7 @@ data/processed/fig_2e_data.rds: src/R/fig_2e.R\
 	data/processed/exp_5_diversity.csv
 	data/processed/bci_cleaned.rds
 	Rscript $<
-data/processed/fig_2f_data.rds: src/R/fig_2e.R\
+data/processed/fig_2f_data.rds: src/R/fig_2f.R\
 	data/processed/exp_5_diversity.csv
 	data/processed/bci_cleaned.rds
 	Rscript $<

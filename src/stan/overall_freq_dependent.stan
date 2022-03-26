@@ -29,7 +29,7 @@ model{
     if(i > 1) {
       f = f .* (1 + beta * f);
     } else {
-      delta_temp = delta ^ (3.0 / 5.0); // note this should be * not ^
+      delta_temp = delta * (3.0 / 5.0); // note this should be * not ^
       for(kk in 1:(activeVariantCount[i]+1))
         f[kk] = f[kk] * (1 + beta * f[kk]) ^ (3.0 / 5.0);
     }
@@ -59,7 +59,7 @@ generated quantities{
     if(i > 1) {
       f = f .* (1 + beta * f);
     } else {
-      delta_temp = delta ^ (3.0 / 5.0);
+      delta_temp = delta * (3.0 / 5.0);
       for(kk in 1:(activeVariantCount[i]+1))
         f[kk] = f[kk] * (1 + beta * f[kk]) ^ (3.0 / 5.0);
     }
