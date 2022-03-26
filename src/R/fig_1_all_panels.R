@@ -2,6 +2,7 @@
 library(tidyverse)
 library(ggrepel)
 library(cowplot)
+library(metR)
 
 pal<-c("deepskyblue4", "grey75", "indianred4")
 
@@ -57,11 +58,13 @@ gb <- ggplot(data=f4, aes(x=as.numeric(censusyear), y=relfreq,
 df_1c <- readRDS("data/processed/fig_1c_data.rds")
 pred1 <- df_1c$pred1
 c2 <- df_1c$c2
-labels <- df_1c$c2
+labels <- df_1c$labels
+breaks <- round(quantile(pred1$w_est), 2)
 gc <- ggplot(data=pred1, aes(x=surv_est, y=RR_est, z=w_est))+
-  geom_contour(colour="grey50", bins=50, size=0.1)+
+  geom_contour2(colour="grey50", bins=50, size=0.1)+
+  geom_text_contour(breaks=breaks, colour="grey50", skip=0, size=3, bins=15)+
   geom_point(data=c2, aes(x=surv_est,y=RR_est, colour=as.factor(selclass)), size=2)+
-  geom_text(data=labels, aes(x=surv_est, y=RR_est,label=species,colour=as.factor(selclass)), size=2)+
+  geom_text_repel(data=labels, aes(x=surv_est, y=RR_est,label=species,colour=as.factor(selclass)), size=2)+
   scale_colour_manual(values=pal)+
   guides(fill="none")+
   xlab("annual probability of survival")+
