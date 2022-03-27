@@ -76,23 +76,28 @@ data/processed/reproductives_stan_data.rds: src/R/prepare_stan_data.R
 	Rscript $<
 
 data/processed/stan_fits/overall_freq_dependent.rds: src/R/fit_overall.R\
-	data/processed/reproductives_stan_data.rds
+	data/processed/reproductives_stan_data.rds\
+	src/stan/overall_freq_dependent.stan
 	Rscript $< overall_freq_dependent 4000 4 2 -99
 
 data/processed/stan_fits/overall_freq_independent.rds: src/R/fit_overall.R\
-	data/processed/reproductives_stan_data.rds
+	data/processed/reproductives_stan_data.rds\
+	src/stan/overall_freq_independent.stan
 	Rscript $< overall_freq_independent 8000 4 10 -99
 
 data/processed/stan_fits/overall_freq_independent_split.rds: src/R/fit_overall.R\
-	data/processed/reproductives_stan_data.rds
+	data/processed/reproductives_stan_data.rds\
+	src/stan/overall_freq_independent_split.stan
 	Rscript $< overall_freq_independent_split 8000 4 10 -99
 
 data/processed/stan_fits/overall_freq_rw.rds: src/R/fit_overall.R\
-	data/processed/reproductives_stan_data.rds
+	data/processed/reproductives_stan_data.rds\
+	src/stan/overall_freq_rw.stan
 	Rscript $< overall_freq_rw 8000 4 10 -99
 
 data/processed/stan_fits/overall_neutral.rds: src/R/fit_overall.R\
-	data/processed/reproductives_stan_data.rds
+	data/processed/reproductives_stan_data.rds\
+	src/stan/overall_neutral.stan
 	Rscript $< overall_neutral 4000 4 2 -99
 
 data/processed/stan_fits/diagnostics.rds: src/R/stanfit_diagnostic_checks.R\
@@ -172,7 +177,7 @@ outputs/prior_predictive_birth_death.pdf: src/R/prior_predictive_plot.R\
 data/processed/stan_fits/birth_death.rds: src/R/fit_birth_and_death.R\
 	data/processed/reproductives_stan_birth_death_data.rds\
 	src/stan/birth_and_death.stan
-	Rscript $< 160000 4 80
+	Rscript $< 200000 4 100
 
 data/processed/stan_fits/diagnostics_birth_death.rds: src/R/stanfit_birth_death_diagnostic_checks.R\
 	data/processed/stan_fits/birth_death.rds
@@ -207,7 +212,8 @@ data/processed/bci_cleaned_quartered.rds: src/R/remove_lazarus_quartered.R\
 	Rscript $<
 
 $(QUARTER_FITS): data/processed/stan_fits/quartered_%.rds: src/R/fit_quartered.R\
-	data/processed/bci_cleaned_quartered.rds
+	data/processed/bci_cleaned_quartered.rds\
+	src/stan/overall_freq_independent.stan
 	Rscript $< $* 8000 4 10
 
 data/processed/quartered_betas.rds: src/R/compare_quartered_estimates.R\
