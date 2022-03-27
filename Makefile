@@ -280,15 +280,12 @@ data/processed/exp_5_diversity.csv: src/R/exp_5_diversity.R
 
 # main plots for paper
 data/processed/fig_1a_data.rds: src/R/fig_1_ab_frequency_independent.R\
-	data/processed/freq_independent_parameters.rds\
-	data/processed/bci_cleaned.rds
+	data/processed/freq_independent_parameters.rds
 	Rscript $<
 data/processed/fig_1b_data.rds: data/processed/fig_1a_data.rds
 
 data/processed/fig_1c_data.rds: src/R/fig_1c_fitness_components.R\
-	data/processed/birth_death_estimates.rds\
-	data/processed/stan_fits/overall_freq_independent.rds\
-	data/processed/reproductives_stan_birth_death_data.rds
+	data/processed/stan_fits/overall_freq_independent.rds
 	Rscript $<
 
 outputs/fig_1.pdf: src/R/fig_1_all_panels.R\
@@ -298,42 +295,32 @@ outputs/fig_1.pdf: src/R/fig_1_all_panels.R\
 	Rscript $<
 
 data/processed/fig_2a_data.rds: src/R/fig_2a.R\
-	data/processed/bci_cleaned.rds\
 	data/processed/exp_1_diversity.csv
 	Rscript $<
-data/processed/fig_2b_data.rds: src/R/fig_2b.R\
-	data/processed/bci_cleaned.rds
+data/processed/fig_2b_data.rds: src/R/fig_2b.R
 	Rscript $<
 data/processed/fig_2c_data.rds: src/R/fig_2c.R\
-	data/processed/exp_3_diversity.csv\
-	data/processed/bci_cleaned.rds
+	data/processed/exp_3_diversity.csv
 	Rscript $<
 data/processed/fig_2d_data.rds: src/R/fig_2d.R\
-	data/processed/exp_3_diversity.csv\
-	data/processed/bci_cleaned.rds
+	data/processed/exp_3_diversity.csv
 	Rscript $<
 data/processed/fig_2e_data.rds: src/R/fig_2e.R\
 	data/processed/exp_5_diversity.csv
-	data/processed/bci_cleaned.rds
 	Rscript $<
 data/processed/fig_2f_data.rds: src/R/fig_2f.R\
 	data/processed/exp_5_diversity.csv
-	data/processed/bci_cleaned.rds
 	Rscript $<
 data/processed/fig_2g_data.rds: src/R/fig_2g.R\
-	data/processed/bci_cleaned.rds\
 	data/processed/exp_2_diversity.csv
 	Rscript $<
 data/processed/fig_2h_data.rds: src/R/fig_2h.R\
-	data/processed/bci_cleaned.rds\
 	data/processed/exp_2_diversity.csv
 	Rscript $<
 data/processed/fig_2i_data.rds: src/R/fig_2i.R\
-	data/processed/bci_cleaned.rds\
 	data/processed/exp_2_diversity.csv
 	Rscript $<
 data/processed/fig_2j_data.rds: src/R/fig_2j.R\
-	data/processed/bci_cleaned.rds\
 	data/processed/exp_2_diversity.csv
 	Rscript $<
 
@@ -350,12 +337,10 @@ outputs/fig_2.pdf: src/R/fig_2_all_panels.R\
 	data/processed/fig_2j_data.rds
 	Rscript $<
 
-outputs/fig_s1.pdf: src/R/fig_s1.R\
-	data/processed/bci_cleaned.rds
+outputs/fig_s1.pdf: src/R/fig_s1.R
 	Rscript $<
 
-outputs/fig_s2.pdf: src/R/fig_s2.R\
-	data/processed/quartered_betas.rds
+outputs/fig_s2.pdf: src/R/fig_s2.R
 	Rscript $<
 
 data/processed/BCI_allindividuals.rds: src/R/process_all_individuals.R\
@@ -375,12 +360,10 @@ outputs/fig_s3.pdf: src/R/fig_s3.R\
 	Rscript $<
 
 outputs/fig_s4.pdf: src/R/fig_s4.R\
-	data/processed/bci_cleaned.rds\
 	data/processed/exp_1_counts.csv
 	Rscript $<
 
 outputs/fig_s5.pdf: src/R/fig_s5.R\
-	data/processed/bci_cleaned.rds\
 	data/processed/exp_1_counts.csv
 	Rscript $<
 
