@@ -25,7 +25,8 @@ stan_fitting_birth_death: data/processed/reproductives_stan_birth_death_data.rds
 	data/processed/population_birth_death_samples.rds\
 	data/processed/quartered_betas.rds\
 	data/processed/birth_death_betas.csv\
-	data/processed/N_trees.csv
+	data/processed/N_trees.csv\
+	data/processed/nmutants_quantiles.rds
 
 julia_outputs: data/processed/julia_runs/Exp-1_Wildtype-Extension/exp_1-1_1_1_1_1.csv\
 	data/processed/julia_runs/Exp-3_Sel_on-off_equal/exp_3-1_1_1_1_1.csv\
@@ -238,6 +239,10 @@ data/processed/N_trees.csv: src/R/generate_fraction_children.R\
 	data/processed/bci_cleaned.rds
 	Rscript $<
 data/processed/data/processed/fraction_children_born_censusyear.csv: data/processed/N_trees.csv
+
+data/processed/nmutants_quantiles.rds: src/R/birth_death_nmutant_extract.R\
+	data/processed/stan_fits/birth_death.rds
+	Rscript $<
 
 # note that, for julia runs, I don't include all dependencies or outputs here since there are so many
 data/processed/julia_runs/Exp-1_Wildtype-Extension/exp_1-1_1_1_1_1.csv: src/julia/Birth-Death_D_treat_exp_1_Wildtype_Ext.jl
